@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: juniper-os-ingestion-stack
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nodejs
+    spec:
+      containers:
+      - name: juniper-os-ingestion-stack
+        image: dashcraft/juniper-os-ingestion-stack:1.0
+        ports:
+        - containerPort: 3000
