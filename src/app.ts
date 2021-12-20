@@ -1,18 +1,77 @@
-import 'reflect-metadata'
-import dotenv from 'dotenv'
-// import path from 'path';
-import express, { NextFunction, Response, Request }  from 'express'
-// Load environment variables from .env file, where API keys and passwords are configured
-dotenv.config({ path: '.env' })
+import express from 'express'
+import bodyParser from 'body-parser'
+import cors from 'cors'
+import queues from './queues'
+import sequelize from './db'
+import SensorReading from './models/sensor-reading'
+const { createBullBoard } = require('@bull-board/api')
+const { BullAdapter } = require('@bull-board/api/bullAdapter')
+const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter')
+const { ExpressAdapter } = require('@bull-board/express')
 
-// Create Express server
+const serverAdapter = new ExpressAdapter()
+
+createBullBoard({
+  serverAdapter,
+  queues: [
+    new BullAdapter(queues.kinsesisRecordsQueue),
+    new BullAdapter(queues.outboundSensorReadingQueue)
+  ]
+})
+
 const app = express()
+serverAdapter.setBasePath('/admin/queues')
 
-// Express configuration
-app.set('port', process.env.PORT || 3000)
+if (process.env.NODE_BULL_UI) {
+  app.use('/admin/queues', serverAdapter.getRouter())
+}
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
-  res.redirect('/api')
+app.use(bodyParser.json({
+  limit: 10000
+}))
+
+app.use(cors())
+
+export async function attemptDBConnect() {
+  try {
+    if (!process.env.NODE_BULL_PERSIST_SUCCESS) {
+      await queues.kinsesisRecordsQueue.clean(1000)
+      await queues.outboundSensorReadingQueue.clean(1000)
+    }
+    await sequelize.authenticate()
+    console.log('Connection has been established successfully.')
+  } catch (error) {
+    console.error('Unable to connect to the database:', error)
+    process.exit(1)
+  }
+}
+
+app.get('/', (req, res) => {
+  SensorReading.findAll().then((sensorReadings: any) => {
+    res.send(sensorReadings)
+  })
+})
+
+app.post('/sensor-ingest', async (req, res) => {
+  const { body } = req
+  try {
+    await queues.kinsesisRecordsQueue.add(body, {
+      attempts: 2,
+      removeOnComplete: true
+    })
+
+    res.status(200).json({
+      requestId: body.requestId,
+      timestamp:  body.timestamp
+    })
+  } catch (error) {
+    res.status(500).json({})
+  }
+})
+
+app.post('/test-put', async (req, res) => {
+  const { body } = req
+  res.status(200).json(body)
 })
 
 export default app
