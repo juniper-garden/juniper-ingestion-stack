@@ -2,14 +2,14 @@
 # Docker NodeJS Typescript Starter
 # Example Dockerfile
 #
-FROM node:16 AS build
+FROM node:16-alpine3.12 AS build
 
 # Intall missing dependencies
 RUN apk add --update \
   bash \
-  python \
-  python-dev \
   build-base
+
+RUN apk add --no-cache --virtual .gyp python3 make g++
 
 # Create App dir
 RUN mkdir -p /app
@@ -26,4 +26,5 @@ RUN cp .env.example .env
 # Install dependencies
 RUN yarn install
 
-CMD [ "/app/scripts/run.sh" ]
+RUN yarn build
+CMD ["yarn", "serve"]
