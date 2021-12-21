@@ -4,6 +4,7 @@ import cors from 'cors'
 import queues from './queues'
 import sequelize from './db'
 import SensorReading from './models/sensor-reading'
+import { sensorIngestPoint } from './controllers/sensorIngestController'
 const { createBullBoard } = require('@bull-board/api')
 const { BullAdapter } = require('@bull-board/api/bullAdapter')
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter')
@@ -15,7 +16,8 @@ createBullBoard({
   serverAdapter,
   queues: [
     new BullAdapter(queues.kinsesisRecordsQueue),
-    new BullAdapter(queues.outboundSensorReadingQueue)
+    new BullAdapter(queues.outboundSensorReadingQueue),
+    new BullAdapter(queues.kafkaRecordsQueue)
   ]
 })
 
@@ -36,6 +38,7 @@ export async function attemptDBConnect() {
   try {
     if (!process.env.NODE_BULL_PERSIST_SUCCESS) {
       await queues.kinsesisRecordsQueue.clean(1000)
+      await queues.kafkaRecordsQueue.clean(1000)
       await queues.outboundSensorReadingQueue.clean(1000)
     }
     await sequelize.authenticate()
@@ -52,22 +55,7 @@ app.get('/', (req, res) => {
   })
 })
 
-app.post('/sensor-ingest', async (req, res) => {
-  const { body } = req
-  try {
-    await queues.kinsesisRecordsQueue.add(body, {
-      attempts: 2,
-      removeOnComplete: true
-    })
-
-    res.status(200).json({
-      requestId: body.requestId,
-      timestamp:  body.timestamp
-    })
-  } catch (error) {
-    res.status(500).json({})
-  }
-})
+app.post('/sensor-ingest', sensorIngestPoint)
 
 app.post('/test-put', async (req, res) => {
   const { body } = req

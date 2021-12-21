@@ -1,15 +1,22 @@
 'use strict';
+const withDateNoTz = require('sequelize-date-no-tz-postgres')
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    const sqDataTypes = withDateNoTz(Sequelize);
     await queryInterface.createTable('sensor_readings', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        type: Sequelize.INTEGER
+      },
       customer_device_id: {
-          primaryKey: true,
           type: Sequelize.DataTypes.UUID,
           allowNull: false
       },
       timestamp: {
-        primaryKey: true,
-        type: Sequelize.DATE
+        allowNull: false,
+        type: sqDataTypes.DATE_NO_TZ
       },
       name: {
         type: Sequelize.STRING
@@ -28,7 +35,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
+    await queryInterface.addIndex('sensor_readings', ['customer_device_id'])
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('sensor_readings');

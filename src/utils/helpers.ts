@@ -1,7 +1,7 @@
 import _ from 'lodash/fp'
 import { IKinesisSensorPayload, IReading, SensorReading } from '../interfaces/sensor_reading'
 
-export const kinesisTransformer = _.compose(_.flatten, MapSensorPayloadToReadings, kinesisPayloadTransformer)
+export const kinesisTransformer = _.compose(_.flatten, MapSensorPayloadToReadings)
 
 export function kinesisPayloadTransformer(item:any) {
   return kinesisRecordTransformer(item.data)

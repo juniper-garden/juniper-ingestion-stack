@@ -16,6 +16,10 @@ and management will be moved either to this repository or a separate repository.
 
 ## Kubernetes Local Deployment
 ### Technologies
+- TimescaleDb (pg13)
+- Kafka
+- Zookeeper
+- Kafka-ui
 - (Docker) <https://docs.docker.com/get-docker/>
 - kubectl `brew install kubectl`
 - minikube `brew install minikube`

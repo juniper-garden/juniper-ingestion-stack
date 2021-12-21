@@ -1,5 +1,7 @@
 require('dotenv').config()
 import app, { attemptDBConnect } from './app'
+import kafka from './kafka/kafka'
+import { startConsuming } from './services/kafkaSensorConsumer'
 
 const PORT = process.env['PORT'] || 8000
 
@@ -15,6 +17,18 @@ const server = app.listen(PORT, () => {
   )
   console.log('  Press CTRL-C to stop\n')
 })
+
+if (process.env.USE_KAFKA) {
+  setupKafka()
+  async function setupKafka() {
+    const producer = kafka.producer()
+    const consumer = kafka.consumer({ groupId: 'nodejs-dev' })
+    await producer.connect()
+
+    app.set('kafka_producer', producer)
+    startConsuming(consumer)
+  }
+}
 
 if (process.env.USE_SOCKETS) {
   const io = require('socket.io')(server)
