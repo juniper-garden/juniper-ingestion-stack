@@ -9,11 +9,13 @@ class SensorReading extends Model<any> {}
 SensorReading.init({
   // Model attributes are defined here
   customer_device_id: {
+    primaryKey: true,
     type: DataTypes.UUID,
     allowNull: false
   },
   timestamp: {
-    type: DataTypes.STRING
+    primaryKey: true,
+    type: DataTypes.DATE
   },
   name: {
     type: DataTypes.STRING
@@ -32,6 +34,8 @@ SensorReading.init({
   updatedAt: 'updated_at',
   createdAt: 'created_at'
 })
+
+sequelize.models.SensorReading.removeAttribute('id')
 
 // the defined model is the class itself
 console.log(SensorReading === sequelize.models.SensorReading) // true

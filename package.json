@@ -20,6 +20,9 @@
     "serve-debug": "nodemon --inspect dist/server.js",
     "test": "jest unit --forceExit --verbose",
     "lint:fix": "yarn tslint --fix",
+    "db:create": "npx sequelize-cli db:create",
+    "db:seed": "npx sequelize-cli db:seed",
+    "db:migrate": "npx sequelize-cli db:migrate",
     "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"yarn watch-ts\" \"yarn serve-debug\""
   },
   "author": "<Daniel Ashcraft>(https://ofashandfire.com)",
