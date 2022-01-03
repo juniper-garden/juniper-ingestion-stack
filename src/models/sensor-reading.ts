@@ -21,7 +21,8 @@ SensorReading.init({
     allowNull: false
   },
   timestamp: {
-    type: customerDataTypes.DATE_NO_TZ
+    type: customerDataTypes.DATE_NO_TZ,
+    primaryKey: true
   },
   name: {
     type: DataTypes.STRING
@@ -40,8 +41,6 @@ SensorReading.init({
   updatedAt: 'updated_at',
   createdAt: 'created_at'
 })
-
-sequelize.models.SensorReading.removeAttribute('id')
 
 // the defined model is the class itself
 console.log(SensorReading === sequelize.models.SensorReading) // true
