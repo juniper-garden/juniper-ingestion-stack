@@ -7,7 +7,7 @@ console.log('brokers', brokers)
 if (process.env.USE_KAFKA) {
   kafka = new Kafka({
     brokers,
-    logLevel: logLevel.ERROR,
+    logLevel: logLevel.INFO,
     clientId: 'juniper-ingest-client'
   })
 }
