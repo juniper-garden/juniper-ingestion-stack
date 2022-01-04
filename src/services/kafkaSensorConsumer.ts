@@ -9,10 +9,14 @@ export async function startConsuming(consumer: Consumer) {
   const startTime = Date.now()
   await consumer.run({
     eachBatchAutoResolve: true,
-    eachBatch: async ({ batch, resolveOffset, heartbeat }: EachBatchPayload) => {
+    eachBatch: async ({ batch, resolveOffset, heartbeat, isRunning, isStale }: EachBatchPayload) => {
       const parsedData = []
       console.log('consumer is running')
       for (const message of batch.messages) {
+        if(!isRunning() || isStale()) {
+          console.log('consumer stopped running or isstale')
+          break
+        }
         console.log('consumer is running and here is the data', JSON.parse(message.value.toString()))
 
         parsedData.push(JSON.parse(message.value.toString()))
