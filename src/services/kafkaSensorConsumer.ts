@@ -13,7 +13,7 @@ export async function startConsuming(consumer: Consumer) {
       const parsedData = []
       console.log('consumer is running')
       for (const message of batch.messages) {
-        if(!isRunning() || isStale()) {
+        if (!isRunning() || isStale()) {
           console.log('consumer stopped running or isstale')
           break
         }
