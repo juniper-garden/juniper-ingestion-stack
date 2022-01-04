@@ -11,7 +11,6 @@ export async function startConsuming(consumer: Consumer) {
     eachBatchAutoResolve: true,
     eachBatch: async ({ batch, resolveOffset, heartbeat, isRunning, isStale }: EachBatchPayload) => {
       const parsedData = []
-      console.log('consumer is running')
       for (const message of batch.messages) {
         if (!isRunning() || isStale()) {
           console.log('consumer stopped running or isstale')
@@ -22,12 +21,15 @@ export async function startConsuming(consumer: Consumer) {
         parsedData.push(JSON.parse(message.value.toString()))
 
         resolveOffset(message.offset)
-        await heartbeat()
       }
       await queues.kafkaRecordsQueue.add(parsedData, {
         attempts: 2,
         removeOnComplete: true
       })
+      console.log('made it passed adding to queue', parsedData)
+      await heartbeat()
     }
+  }).catch((err) => {
+    console.error(err)
   })
 }
