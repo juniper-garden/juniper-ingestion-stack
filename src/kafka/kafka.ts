@@ -1,4 +1,4 @@
-const { Kafka } = require('kafkajs')
+const { Kafka, logLevel } = require('kafkajs')
 
 let kafka:any = {}
 const brokers = process.env.KAFKA_BROKERS.split(',')
@@ -7,6 +7,7 @@ console.log('brokers', brokers)
 if (process.env.USE_KAFKA) {
   kafka = new Kafka({
     brokers,
+    logLevel: logLevel.ERROR,
     clientId: 'juniper-ingest-client'
   })
 }
