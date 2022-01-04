@@ -2,6 +2,7 @@ import { Consumer, EachBatchPayload } from 'kafkajs'
 import queues from '../queues'
 
 export async function startConsuming(consumer: Consumer) {
+  console.log('consumer started')
   await consumer.connect()
   await consumer.subscribe({ topic: 'sensor-ingest', fromBeginning: true })
 
@@ -10,6 +11,7 @@ export async function startConsuming(consumer: Consumer) {
     eachBatchAutoResolve: true,
     eachBatch: async ({ batch, resolveOffset, heartbeat }: EachBatchPayload) => {
       const parsedData = []
+      console.log('consumer is running')
       for (const message of batch.messages) {
         parsedData.push(JSON.parse(message.value.toString()))
 
