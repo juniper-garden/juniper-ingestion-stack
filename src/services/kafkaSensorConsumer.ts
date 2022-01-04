@@ -18,12 +18,12 @@ export async function startConsuming(consumer: Consumer) {
         parsedData.push(JSON.parse(message.value.toString()))
 
         resolveOffset(message.offset)
+        await heartbeat()
       }
       await queues.kafkaRecordsQueue.add(parsedData, {
         attempts: 2,
         removeOnComplete: true
       })
-      await heartbeat()
     }
   })
 }
