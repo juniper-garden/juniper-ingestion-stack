@@ -11,19 +11,26 @@ interface Queues {
 }
 
 const redisUrl = process.env.REDIS_URI || 'redis://127.0.0.1:6379'
+console.log('redisuUrl', redisUrl)
 // Define a queue
-const kinsesisRecordsQueue: any = new Queue('kinesis_records_q', {
-  redis: redisUrl
+const kinsesisRecordsQueue: any = new Queue('kinesis_records_q', redisUrl, {
+  redis: {
+    tls: {}
+  }
 })
 
 // Define a queue
-const outboundSensorReadingQueue: any = new Queue('outbound_pg_q', {
-  redis: redisUrl
+const outboundSensorReadingQueue: any = new Queue('outbound_pg_q', redisUrl, {
+  redis: {
+    tls: {}
+  }
 })
 
 // Define a queue
-const kafkaRecordsQueue: any = new Queue('kafka_records_q', {
-  redis: redisUrl
+const kafkaRecordsQueue: any = new Queue('kafka_records_q', redisUrl, {
+  redis: {
+    tls: {}
+  }
 })
 
 kinsesisRecordsQueue.process(kinesisQueueProcessingService)
