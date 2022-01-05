@@ -6,7 +6,8 @@ export async function startConsuming(consumer: Consumer) {
   await consumer.connect()
   await consumer.subscribe({ topic: 'sensor-ingest', fromBeginning: true })
 
-  const startTime = Date.now()
+  consumer.on('consumer.crash', (e:any) => console.error('Consumer crashed', e?.payload?.error))
+  consumer.on('consumer.disconnect', (e:any) => console.error('Consumer disconnected', e?.payload?.error)))
   await consumer.run({
     eachBatchAutoResolve: true,
     eachBatch: async ({ batch, resolveOffset, heartbeat, isRunning, isStale }: EachBatchPayload) => {
