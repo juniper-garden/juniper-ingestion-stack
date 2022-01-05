@@ -23,7 +23,7 @@ if (process.env.USE_KAFKA) {
   async function setupKafka() {
     const producer = kafka.producer()
     const consumer = kafka.consumer({
-      groupId: 'sensor-ingest-group',
+      groupId: 'nodejs-dev',
       retry: {
         initialRetryTime: 10 * 1000,
         retries: 10
