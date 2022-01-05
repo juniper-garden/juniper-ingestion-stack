@@ -7,8 +7,8 @@ export async function startConsuming(consumer: Consumer) {
   await consumer.subscribe({ topic: 'sensor-ingest', fromBeginning: true })
 
   consumer.on('consumer.crash', (e:any) => console.error('Consumer crashed', e?.payload?.error))
-  consumer.on('consumer.disconnect', (e:any) => console.error('Consumer disconnected', e?.payload?.error)))
-  consumer.on('consumer.network.request_timeout', (e:any) => console.error('Consumer network request timeout', e?.payload?.error)))
+  consumer.on('consumer.disconnect', (e:any) => console.error('Consumer disconnected', e?.payload?.error))
+  consumer.on('consumer.network.request_timeout', (e:any) => console.error('Consumer network request timeout', e?.payload?.error))
 
   await consumer.run({
     eachBatchAutoResolve: true,
