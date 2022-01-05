@@ -22,7 +22,10 @@ export async function startConsuming(consumer: Consumer) {
         console.log('consumer is running and here is the data', JSON.parse(message.value.toString()))
 
         parsedData.push(JSON.parse(message.value.toString()))
+        resolveOffset(message.offset)
       }
+      console.log('made it to before adding to queue', parsedData)
+
       await queues.kafkaRecordsQueue.add(parsedData, {
         attempts: 2,
         removeOnComplete: true

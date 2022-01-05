@@ -2,7 +2,6 @@ require('dotenv').config()
 import app, { attemptDBConnect } from './app'
 import kafka from './kafka/kafka'
 import { startConsuming } from './services/kafkaSensorConsumer'
-
 const PORT = process.env['PORT'] || 8000
 
 /**

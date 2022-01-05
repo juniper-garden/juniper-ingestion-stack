@@ -24,9 +24,7 @@ createBullBoard({
 const app = express()
 serverAdapter.setBasePath('/admin/queues')
 
-if (process.env.NODE_BULL_UI) {
-  app.use('/admin/queues', serverAdapter.getRouter())
-}
+app.use('/admin/queues', serverAdapter.getRouter())
 
 app.use(bodyParser.json({
   limit: 10000
