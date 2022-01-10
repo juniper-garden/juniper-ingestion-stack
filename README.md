@@ -8,7 +8,7 @@ sensor onboarding, only ingestion of data at the moment. In the future, device o
 and management will be moved either to this repository or a separate repository.
 ## Development
 - Install dependencies with `yarn install`
-- run `docker volume create timeseries_db_volume`
+- run `docker volume create timeseries-db-volume`
 - run `docker-compose up -d` to make sure services have started
 - run the script at `./scripts/setup_db.sh` to setup the database
 - run `yarn build` to make sure the current application builds appropriately
@@ -24,7 +24,7 @@ and management will be moved either to this repository or a separate repository.
 - kubectl `brew install kubectl`
 - minikube `brew install minikube`
 ### Stack Setup
-- `docker volume create timeseries_db_volume`
+- `docker volume create timeseries-db-volume`
 - `docker build -t juniper-ingestion-stack .`
 - `docker run -d --name juniper-ingestion-stack -p 3000:3000 juniper-ingestion-stack`
 - `minikube start`
