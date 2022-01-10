@@ -11,7 +11,7 @@ services:
       POSTGRES_DB: "juniper-gd-dev"
       TIMESCALEDB_TELEMETRY: "on"
     volumes:
-      - timeseries_db_volume:/var/lib/postgresql/data
+      - timeseries-db-volume:/var/lib/postgresql/data
     restart: always
 
   kafka-ui:
@@ -156,5 +156,5 @@ services:
                kafka-console-producer --broker-list kafka0:29092 -topic second.users < /data/message.json'"
 
 volumes:
-  timeseries_db_volume:
+  timeseries-db-volume:
     external: true
