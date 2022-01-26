@@ -21,12 +21,21 @@ export function kinesisQueueProcessingService(job: any, done: any) {
       const sensorReadings = readingsMapped[key][sensorName]
 
       sensorReadings.forEach((reding:any) => {
+        let dateTimeConversion = moment.utc(reding.timestamp * 1000).toString()
+        if (moment.utc(reding.timestamp * 1000).format('YYYY') === '1970') {
+          const currentDate = moment().startOf('day').utc()
+          const utcConvertedDate = currentDate.add(reding.timestamp, 'seconds')
+          if(utcConvertedDate.format('YYYY') !== '1970') {
+            dateTimeConversion = utcConvertedDate.toString()
+          }
+        }
+
         finalBatchResults.push({
           customer_device_id: key,
           name: sensorName,
           value: parseFloat0(reding.value).toString(),
           unit: sensorReadings[0].unit,
-          timestamp: moment.utc(reding.timestamp * 1000).toString()
+          timestamp: dateTimeConversion
         })
       })
     }
