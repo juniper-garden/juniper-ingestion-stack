@@ -20,12 +20,12 @@ export function kinesisQueueProcessingService(job: any, done: any) {
     for (const sensorName in readingsMapped[key]) {
       const sensorReadings = readingsMapped[key][sensorName]
 
-      sensorReadings.forEach((reding:any) => {
+      sensorReadings.forEach((reding: any) => {
         let dateTimeConversion = moment.utc(reding.timestamp * 1000).toString()
         if (moment.utc(reding.timestamp * 1000).format('YYYY') === '1970') {
           const currentDate = moment().startOf('day').utc()
           const utcConvertedDate = currentDate.add(reding.timestamp, 'seconds')
-          if(utcConvertedDate.format('YYYY') !== '1970') {
+          if (utcConvertedDate.format('YYYY') !== '1970') {
             dateTimeConversion = utcConvertedDate.toString()
           }
         }
